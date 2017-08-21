@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zns.mapper.UserMapper">
+    <resultMap id="userResultMap" type="User">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="token" column="token"/>
+        <result property="regTime" column="reg_time"/>
+        <result property="loginTime" column="login_time"/>
+    </resultMap>
+
+    <select id="findUserByName" parameterType="String" resultMap="userResultMap">
+        SELECT * FROM users WHERE username = #{username}
+    </select>
+
+    <select id="findUserById" parameterType="Integer" resultMap="userResultMap">
+        SELECT * FROM users WHERE id=#{id}
+    </select>
+
+    <!--<update id="update" parameterType="User">-->
+        <!---->
+    <!--</update>-->
+    <!--默认会返回受影响的行数 不会返回uid-->
+    <!--<insert id="addUser" parameterType="User">-->
+    <!--INSERT INTO users (username,password,nickname,token,reg_time,login_time) VALUES (#{username},#{password},#{nickname},#{token},#{regTime},#{loginTime})-->
+    <!--</insert>-->
+
+    <!--官方推荐的方式返回自增长ID-->
+    <!--<insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">-->
+    <!--INSERT INTO users (username,password,nickname,token,reg_time,login_time) VALUES (#{username},#{password},#{nickname},#{token},#{regTime},#{loginTime})-->
+    <!--</insert>-->
+
+    <!--这种方式也可以返回自增长ID-->
+    <insert id="addUser" parameterType="User">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO users (username,password,nickname,token,reg_time,login_time) VALUES
+        (#{username},#{password},#{nickname},#{token},#{regTime},#{loginTime})
+    </insert>
+</mapper>
